@@ -1,12 +1,13 @@
 import pygame
-from Player import player
+import random
+from platforms import Platform
 
 pygame.init()
 screen = pygame.display.set_mode((800,800))
 pygame.display.set_caption("Base dash")
 clock = pygame.time.Clock() # controls frame rates
 
-p1 = player()
+platforms = []
 
 #Color variables
 WHITE = (255,255,255)
@@ -37,6 +38,7 @@ S = 3
 
 keys = [False, False, False, False] #this list holds whether each key has been pressed
 
+
 while True: #GAME LOOP ###############################################################
     clock.tick(60)
     
@@ -50,30 +52,6 @@ while True: #GAME LOOP #########################################################
     #Physics section--------------------------------------------------
     
     #Player input
-    #if event.type == pygame.KEYDOWN: #check for key pressed
-        #if event.key == pygame.K_w:
-            #keys[W]=True
-            
-        #if event.key == pygame.K_a:
-            #keys[A]=True
-            #print("test")
-                
-        #if event.key == pygame.K_d:
-            #keys[D]=True
-                
-    #elif event.type == pygame.KEYUP:
-        #if event.key == pygame.K_w:
-            #keys[W]=False
-                
-       # if event.key == pygame.K_a:
-            #keys[A]=False
-                
-        #if event.key == pygame.K_d:
-            #keys[D]=False
-
-    #if keys[A] == True:
-        #print("test")
-
     if keys[pygame.K_a]:
         px -= vx
     
@@ -97,9 +75,6 @@ while True: #GAME LOOP #########################################################
     #apply gravity
     vy += g
     py += vy
-    #px += vx
-
-    #p1.move(keys)
     
     #check if player is on the ground
     if py >= 600 - ph:
@@ -109,12 +84,28 @@ while True: #GAME LOOP #########################################################
         vy = 0
         NJumps = 2
         isOnGround = True
+    
+    # platform physics------------------------------------------------------
+    if random.randint(1, 100) <= 10: #40& chance to create a new platform
+        platforms.append(Platform())
+        print("appending platforms")
+    
+    #remove platforms that moved off the screen
+    for platform in platforms:
+        if platform.x + platform.width < 10: # check if the platform is off the screen
+            platforms.remove(platform) # fun fact if this was C++ we'd
+    
+    for platform in platforms:
+        platform.update()
 
     
     # render section--------------------------------------------------------
     screen.fill(WHITE)
     
     pygame.draw.rect(screen, BLUE, (px, py, pw, ph))
+    
+    for platform in platforms:
+        platform.draw(screen)
     
     pygame.display.flip()
     
