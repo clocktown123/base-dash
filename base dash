@@ -86,7 +86,7 @@ while True: #GAME LOOP #########################################################
         isOnGround = True
     
     # platform physics------------------------------------------------------
-    if random.randint(1, 100) <= 10: #40& chance to create a new platform
+    if random.randint(1, 100) <= 5: #5% chance to create a new platform every tick
         platforms.append(Platform())
         print("appending platforms")
     
