@@ -1,0 +1,123 @@
+import pygame
+from Player import player
+
+pygame.init()
+screen = pygame.display.set_mode((800,800))
+pygame.display.set_caption("Base dash")
+clock = pygame.time.Clock() # controls frame rates
+
+p1 = player()
+
+#Color variables
+WHITE = (255,255,255)
+BLUE = (0,0,255)
+
+#Player variables
+pw, ph = 10, 20
+px, py = 50, 50
+vx, vy = 5, 0
+g = 0.5
+jmp = -10
+double_jmp = -15
+jumping = False
+double_jumping = False
+Jump_pressed = False
+
+#jump = False
+Djump = False
+
+NJumps = 2
+isOnGround = True
+
+#CONSTANTS 
+A=0
+D=1
+W = 2
+S = 3
+
+keys = [False, False, False, False] #this list holds whether each key has been pressed
+
+while True: #GAME LOOP ###############################################################
+    clock.tick(60)
+    
+    #even handling-------------------------------------
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            
+    keys = pygame.key.get_pressed()
+    
+    #Physics section--------------------------------------------------
+    
+    #Player input
+    #if event.type == pygame.KEYDOWN: #check for key pressed
+        #if event.key == pygame.K_w:
+            #keys[W]=True
+            
+        #if event.key == pygame.K_a:
+            #keys[A]=True
+            #print("test")
+                
+        #if event.key == pygame.K_d:
+            #keys[D]=True
+                
+    #elif event.type == pygame.KEYUP:
+        #if event.key == pygame.K_w:
+            #keys[W]=False
+                
+       # if event.key == pygame.K_a:
+            #keys[A]=False
+                
+        #if event.key == pygame.K_d:
+            #keys[D]=False
+
+    #if keys[A] == True:
+        #print("test")
+
+    if keys[pygame.K_a]:
+        px -= vx
+    
+    if keys[pygame.K_d]:
+        px += vx
+        
+    
+    if keys[pygame.K_w]:
+        if not Jump_pressed:
+            if not jumping:
+                vy = jmp
+                jumping = True
+            elif not double_jumping:
+                vy = double_jmp
+                double_jumping = True
+            Jump_pressed = True
+    else:
+        Jump_pressed = False
+        
+
+    #apply gravity
+    vy += g
+    py += vy
+    #px += vx
+
+    #p1.move(keys)
+    
+    #check if player is on the ground
+    if py >= 600 - ph:
+        py = 600 - ph
+        jumping = False
+        double_jumping = False
+        vy = 0
+        NJumps = 2
+        isOnGround = True
+
+    
+    # render section--------------------------------------------------------
+    screen.fill(WHITE)
+    
+    pygame.draw.rect(screen, BLUE, (px, py, pw, ph))
+    
+    pygame.display.flip()
+    
+                
+           
+    
