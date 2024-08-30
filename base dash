@@ -1,6 +1,7 @@
 import pygame
 import random
 from platforms import Platform
+from BaseBall import Ball
 
 pygame.init()
 screen = pygame.display.set_mode((800,800))
@@ -8,6 +9,7 @@ pygame.display.set_caption("Base dash")
 clock = pygame.time.Clock() # controls frame rates
 
 platforms = []
+balls = []
 
 #Color variables
 WHITE = (255,255,255)
@@ -44,7 +46,6 @@ def plat_collision(px, py, pw, ph, platform):
         px + pw > platform.x and
         py + ph  > platform.y and py < platform.y + platform.height
     )
-
 
 while True: #GAME LOOP ###############################################################
     clock.tick(60)
@@ -93,6 +94,7 @@ while True: #GAME LOOP #########################################################
                 isOnGround = True
                 break
     
+    
     #check if player is on the ground
     if py >= 600 - ph:
         py = 600 - ph
@@ -106,6 +108,10 @@ while True: #GAME LOOP #########################################################
     if random.randint(1, 100) <= 5: #5% chance to create a new platform every tick
         platforms.append(Platform())
         print("appending platforms")
+        
+    if random.randint(1, 100) <= 5:
+        balls.append(Ball())
+        print("appending balls")
     
     #remove platforms that moved off the screen
     for platform in platforms:
@@ -115,9 +121,13 @@ while True: #GAME LOOP #########################################################
     for platform in platforms:
         platform.update()
 
-    
+    for ball in balls:
+        ball.update()
     # render section--------------------------------------------------------
     screen.fill(WHITE)
+    
+    for ball in balls:
+        ball.draw(screen)
     
     pygame.draw.rect(screen, BLUE, (px, py, pw, ph))
     
