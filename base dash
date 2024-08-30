@@ -38,7 +38,7 @@ S = 3
 
 keys = [False, False, False, False] #this list holds whether each key has been pressed
 
-def collision(px, py, pw, ph, platform):
+def plat_collision(px, py, pw, ph, platform):
     return(
         px < platform.x+platform.width and
         px + pw > platform.x and
@@ -84,7 +84,7 @@ while True: #GAME LOOP #########################################################
     py += vy
 
     for platform in platforms:
-        if collision(px, py, pw, ph, platform):
+        if plat_collision(px, py, pw, ph, platform):
             if vy > 0 and py + ph <= platform.y + vy:
                 py = platform.y-ph
                 vy = 0
@@ -125,7 +125,3 @@ while True: #GAME LOOP #########################################################
         platform.draw(screen)
     
     pygame.display.flip()
-    
-                
-           
-    
