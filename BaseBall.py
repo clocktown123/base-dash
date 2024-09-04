@@ -11,6 +11,6 @@ class Ball:
         self.x -= self.speed #moves platform left at a speed from 5 - 7
         
     def draw(self, screen):
-        pygame.draw.circle(screen, (30, 50, 20), (self.x, self.y), 5)
+        pygame.draw.circle(screen, (30, 50, 20), (self.x, self.y), 7)
         
         
