@@ -94,6 +94,9 @@ while True: #GAME LOOP #########################################################
                 isOnGround = True
                 break
     
+    for ball in balls:
+        if ball.x-8 < px+50 and ball.x+8 > px and ball.y+8 > py and ball.y-8 < py+50 :
+            print("test")
     
     #check if player is on the ground
     if py >= 600 - ph:
