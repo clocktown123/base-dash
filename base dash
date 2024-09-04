@@ -47,7 +47,10 @@ def plat_collision(px, py, pw, ph, platform):
         py + ph  > platform.y and py < platform.y + platform.height
     )
 
-while True: #GAME LOOP ###############################################################
+HP = 100
+
+
+while True and HP > 0: #GAME LOOP ###############################################################
     clock.tick(60)
     
     #even handling-------------------------------------
@@ -83,7 +86,8 @@ while True: #GAME LOOP #########################################################
     #apply gravity
     vy += g
     py += vy
-
+    
+    #platform collision
     for platform in platforms:
         if plat_collision(px, py, pw, ph, platform):
             if vy > 0 and py + ph <= platform.y + vy:
@@ -94,10 +98,14 @@ while True: #GAME LOOP #########################################################
                 isOnGround = True
                 break
     
+    #ball collision
     for ball in balls:
-        if ball.x-8 < px+50 and ball.x+8 > px and ball.y+8 > py and ball.y-8 < py+50 :
-            print("test")
+        if ball.x-10 < px+10 and ball.x+10 > px and ball.y+10 > py and ball.y-10 < py+20 :
+            HP -= 10
+            
+        
     
+    print(HP)
     #check if player is on the ground
     if py >= 600 - ph:
         py = 600 - ph
