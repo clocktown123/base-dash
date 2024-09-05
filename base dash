@@ -14,6 +14,7 @@ balls = []
 #Color variables
 WHITE = (255,255,255)
 BLUE = (0,0,255)
+RED = (255, 0, 0)
 
 #Player variables
 pw, ph = 10, 20
@@ -48,7 +49,9 @@ def plat_collision(px, py, pw, ph, platform):
     )
 
 HP = 100
+isHurt = False
 
+Hit = False
 
 while True and HP > 0: #GAME LOOP ###############################################################
     clock.tick(60)
@@ -68,8 +71,13 @@ while True and HP > 0: #GAME LOOP ##############################################
     
     if keys[pygame.K_d]:
         px += vx
-        
     
+    if keys[pygame.K_SPACE]:
+        Hit = True
+    else:
+        Hit = False
+    print (Hit)        
+
     if keys[pygame.K_w]:
         if not Jump_pressed:
             if not jumping:
@@ -100,12 +108,13 @@ while True and HP > 0: #GAME LOOP ##############################################
     
     #ball collision
     for ball in balls:
-        if ball.x-10 < px+10 and ball.x+10 > px and ball.y+10 > py and ball.y-10 < py+20 :
+        if ball.x-7 < px+10 and ball.x+7 > px and ball.y+7 > py and ball.y-7 < py+20 and Hit == False :
             HP -= 10
+        
             
         
     
-    print(HP)
+    #print(HP)
     #check if player is on the ground
     if py >= 600 - ph:
         py = 600 - ph
@@ -118,11 +127,11 @@ while True and HP > 0: #GAME LOOP ##############################################
     # platform physics------------------------------------------------------
     if random.randint(1, 100) <= 5: #5% chance to create a new platform every tick
         platforms.append(Platform())
-        print("appending platforms")
+        #print("appending platforms")
         
     if random.randint(1, 100) <= 5:
         balls.append(Ball())
-        print("appending balls")
+        #print("appending balls")
     
     #remove platforms that moved off the screen
     for platform in platforms:
@@ -140,7 +149,10 @@ while True and HP > 0: #GAME LOOP ##############################################
     for ball in balls:
         ball.draw(screen)
     
-    pygame.draw.rect(screen, BLUE, (px, py, pw, ph))
+    if isHurt == False:
+        pygame.draw.rect(screen, BLUE, (px, py, pw, ph))
+    else:
+        pygame.draw.rect(screen, RED, (px, py, pw, ph))
     
     for platform in platforms:
         platform.draw(screen)
