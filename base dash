@@ -53,6 +53,8 @@ isHurt = False
 
 Hit = False
 
+point = 0
+
 while True and HP > 0: #GAME LOOP ###############################################################
     clock.tick(60)
     
@@ -110,6 +112,11 @@ while True and HP > 0: #GAME LOOP ##############################################
     for ball in balls:
         if ball.x-7 < px+10 and ball.x+7 > px and ball.y+7 > py and ball.y-7 < py+20 and Hit == False :
             HP -= 10
+        elif ball.x-7 < px+10 and ball.x+7 > px and ball.y+7 > py and ball.y-7 < py+20 and Hit == True :
+            ball.speed = -3
+            point += 1
+            
+            
         
             
         
@@ -156,5 +163,9 @@ while True and HP > 0: #GAME LOOP ##############################################
     
     for platform in platforms:
         platform.draw(screen)
+        
+    font = pygame.font.Font(None, 74)
+    text = font.render(str(point), 1, (55, 255, 255))
+    screen.blit(text, (50,10))
     
     pygame.display.flip()
