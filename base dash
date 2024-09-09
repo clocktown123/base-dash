@@ -1,5 +1,6 @@
 import pygame
 import random
+from pygame import mixer
 from platforms import Platform
 from BaseBall import Ball
 
@@ -7,6 +8,10 @@ pygame.init()
 screen = pygame.display.set_mode((800,800))
 pygame.display.set_caption("Base dash")
 clock = pygame.time.Clock() # controls frame rates
+
+mixer.init()
+Bonk = pygame.mixer.Sound("Bonk.mp3")
+HitSE = pygame.mixer.Sound("Hit.mp3")
 
 platforms = []
 balls = []
@@ -27,6 +32,16 @@ jumping = False
 double_jumping = False
 Jump_pressed = False
 
+Guy = pygame.image.load('ArrowGuy.png') #load your spritesheet
+Guy.set_colorkey((255, 0, 255)) #this makes bright pink (255, 0, 255) transparent (sort of)
+
+frameWidth = 50
+frameHeight = 50
+RowNum = 0 #for left animation, this will need to change for other animations
+frameNum = 1
+ticker = 0
+#direction = D
+
 #jump = False
 Djump = False
 
@@ -41,6 +56,8 @@ S = 3
 
 keys = [False, False, False, False] #this list holds whether each key has been pressed
 
+
+#Platform Collision Function--------------------------
 def plat_collision(px, py, pw, ph, platform):
     return(
         px < platform.x+platform.width and
@@ -57,6 +74,7 @@ point = 0
 
 while True and HP > 0: #GAME LOOP ###############################################################
     clock.tick(60)
+    ticker+=1
     
     #even handling-------------------------------------
     for event in pygame.event.get():
@@ -70,9 +88,11 @@ while True and HP > 0: #GAME LOOP ##############################################
     #Player input
     if keys[pygame.K_a]:
         px -= vx
+        RowNum = 0
     
     if keys[pygame.K_d]:
         px += vx
+        RowNum = 2
     
     if keys[pygame.K_SPACE]:
         Hit = True
@@ -81,6 +101,7 @@ while True and HP > 0: #GAME LOOP ##############################################
     print (Hit)        
 
     if keys[pygame.K_w]:
+        RowNum = 1
         if not Jump_pressed:
             if not jumping:
                 vy = jmp
@@ -112,13 +133,25 @@ while True and HP > 0: #GAME LOOP ##############################################
     for ball in balls:
         if ball.x-7 < px+10 and ball.x+7 > px and ball.y+7 > py and ball.y-7 < py+20 and Hit == False :
             HP -= 10
+            pygame.mixer.Sound.play(HitSE)
         elif ball.x-7 < px+10 and ball.x+7 > px and ball.y+7 > py and ball.y-7 < py+20 and Hit == True :
             ball.speed = -3
             point += 1
+            pygame.mixer.Sound.play(Bonk)
             
             
         
-            
+    if vx<0 or vx>0 or vy <0 or vy>0: #left animation
+        # Ticker is a spedometer. We don't want Chicken animating as fast as the
+        # processor can process! Update Animation Frame each time ticker goes over
+        ticker+=1
+        
+    if ticker%10==0: #only change frames every 10 ticks
+        frameNum+=1
+           #If we are over the number of frames in our sprite, reset to 0.
+           #In this particular case, there are 8 frames (0 through 7)
+    if frameNum>7: 
+        frameNum = 0
         
     
     #print(HP)
@@ -157,7 +190,8 @@ while True and HP > 0: #GAME LOOP ##############################################
         ball.draw(screen)
     
     if isHurt == False:
-        pygame.draw.rect(screen, BLUE, (px, py, pw, ph))
+        #pygame.draw.rect(screen, BLUE, (px, py, pw, ph))
+        screen.blit(Guy, (px-30, py-30), (frameWidth*frameNum, RowNum*frameHeight, frameWidth, frameHeight))
     else:
         pygame.draw.rect(screen, RED, (px, py, pw, ph))
     
@@ -165,7 +199,13 @@ while True and HP > 0: #GAME LOOP ##############################################
         platform.draw(screen)
         
     font = pygame.font.Font(None, 74)
-    text = font.render(str(point), 1, (55, 255, 255))
-    screen.blit(text, (50,10))
-    
+    text = font.render(str(point), 1, (0, 0, 0))
+    text2 = font.render(str("HP:"), 1, (0,0,0))
+    text3 = font.render(str(HP), 1, (0, 0, 0))
+    text4 = font.render(str("Score:"), 1, (0,0,0))
+    screen.blit(text, (185,10))
+    screen.blit(text2, (600,10))
+    screen.blit(text3, (700, 10))
+    screen.blit(text4, (20,10))
+
     pygame.display.flip()
